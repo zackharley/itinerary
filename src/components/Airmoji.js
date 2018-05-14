@@ -1,0 +1,475 @@
+import React from 'react';
+import { StyleSheet, Text } from '@react-pdf/core';
+
+export const AIRMOJIS = [
+    {
+    serverName: "core_belo",
+    humanReadableName: "AIRMOJI_CORE_BELO",
+    charCode: "F0001"
+}, {
+    serverName: "core_instantbook",
+    humanReadableName: "AIRMOJI_CORE_INSTANTBOOK",
+    charCode: "F0002"
+}, {
+    serverName: "core_superhost",
+    humanReadableName: "AIRMOJI_CORE_SUPERHOST",
+    charCode: "F0003"
+}, {
+    serverName: "core_star_full",
+    humanReadableName: "AIRMOJI_CORE_STAR_FULL",
+    charCode: "F0004"
+}, {
+    serverName: "core_star_half",
+    humanReadableName: "AIRMOJI_CORE_STAR_HALF",
+    charCode: "F0005"
+}, {
+    serverName: "core_star_empty",
+    humanReadableName: "AIRMOJI_CORE_STAR_EMPTY",
+    charCode: "F0006"
+}, {
+    serverName: "heart",
+    humanReadableName: "AIRMOJI_HEART",
+    charCode: "F0007"
+}, {
+    serverName: "business_travel_ready",
+    humanReadableName: "AIRMOJI_CORE_BUSINESS_TRAVEL_READY",
+    charCode: "F0008"
+}, {
+    serverName: "half_star_outline",
+    humanReadableName: "AIRMOJI_CORE_STAR_HALF_OUTLINE",
+    charCode: "F0009"
+}, {
+    serverName: "core_map_pin",
+    humanReadableName: "AIRMOJI_CORE_MAP_PIN",
+    charCode: "F0010"
+}, {
+    serverName: "core_translation",
+    humanReadableName: "AIRMOJI_CORE_TRANSLATION",
+    charCode: "F0011"
+}, {
+    serverName: "core_calendar",
+    humanReadableName: "AIRMOJI_CORE_CALENDAR",
+    charCode: "F0012"
+}, {
+    serverName: "core_smart_pricing",
+    humanReadableName: "AIRMOJI_CORE_SMART_PRICING",
+    charCode: "F0013"
+}, {
+    serverName: "core_trophy",
+    humanReadableName: "AIRMOJI_CORE_TROPHY",
+    charCode: "F0014"
+}, {
+    serverName: "core_rtl_star_half",
+    humanReadableName: "AIRMOJI_CORE_RTL_STAR_HALF",
+    charCode: "F0015"
+}, {
+    serverName: "core_rtl_half_star_outline",
+    humanReadableName: "AIRMOJI_CORE_RTL_STAR_HALF_OUTLINE",
+    charCode: "F0016"
+}, {
+    serverName: "core_rtl_translation",
+    humanReadableName: "AIRMOJI_CORE_RTL_TRANSLATION",
+    charCode: "F0017"
+}, {
+    serverName: "core_padlock",
+    humanReadableName: "AIRMOJI_CORE_PADLOCK",
+    charCode: "F0018"
+}, {
+    serverName: "core_verified",
+    humanReadableName: "AIRMOJI_CORE_VERIFIED",
+    charCode: "F0019"
+}, {
+    serverName: "accomodation_home",
+    humanReadableName: "AIRMOJI_ACCOMODATION_HOME",
+    charCode: "F1001"
+}, {
+    serverName: "accomodation_keys",
+    humanReadableName: "AIRMOJI_ACCOMODATION_KEYS",
+    charCode: "F1002"
+}, {
+    serverName: "drink_beer",
+    humanReadableName: "AIRMOJI_DRINK_BEER",
+    charCode: "F2001"
+}, {
+    serverName: "drink_bar",
+    humanReadableName: "AIRMOJI_DRINK_BAR",
+    charCode: "F2002"
+}, {
+    serverName: "drink_beverage",
+    humanReadableName: "AIRMOJI_DRINK_BEVERAGE",
+    charCode: "F2003"
+}, {
+    serverName: "drink_coffee",
+    humanReadableName: "AIRMOJI_DRINK_COFFEE",
+    charCode: "F2004"
+}, {
+    serverName: "drink_wine",
+    humanReadableName: "AIRMOJI_DRINK_WINE",
+    charCode: "F2005"
+}, {
+    serverName: "drink_cocktail",
+    humanReadableName: "AIRMOJI_DRINK_COCKTAIL",
+    charCode: "F2006"
+}, {
+    serverName: "drink_tea",
+    humanReadableName: "AIRMOJI_DRINK_TEA",
+    charCode: "F2007"
+}, {
+    serverName: "equipement_bagpack",
+    humanReadableName: "AIRMOJI_EQUIPMENT_BACKPACK",
+    charCode: "F3001"
+}, {
+    serverName: "food_restaurant",
+    humanReadableName: "AIRMOJI_FOOD_RESTAURANT",
+    charCode: "F4001"
+}, {
+    serverName: "food_bowl",
+    humanReadableName: "AIRMOJI_FOOD_BOWL",
+    charCode: "F4002"
+}, {
+    serverName: "food_gluten",
+    humanReadableName: "AIRMOJI_FOOD_GLUTEN",
+    charCode: "F4003"
+}, {
+    serverName: "food_vegetarian",
+    humanReadableName: "AIRMOJI_FOOD_VEGETARIAN",
+    charCode: "F4004"
+}, {
+    serverName: "transportation_car",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_CAR",
+    charCode: "F5001"
+}, {
+    serverName: "transportation_bike",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_BIKE",
+    charCode: "F5002"
+}, {
+    serverName: "transportation_bus",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_BUS",
+    charCode: "F5003"
+}, {
+    serverName: "transportation_plane",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_PLANE",
+    charCode: "F5004"
+}, {
+    serverName: "transportation_transit",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_TRANSIT",
+    charCode: "F5005"
+}, {
+    serverName: "transportation_walking",
+    humanReadableName: "AIRMOJI_TRANSPORTATION_WALKING",
+    charCode: "F5006"
+}, {
+    serverName: "social_impact_ribbon",
+    humanReadableName: "AIRMOJI_SOCIAL_IMPACT_RIBBON",
+    charCode: "F6001"
+}, {
+    serverName: "social_impact_ribbon_white",
+    humanReadableName: "AIRMOJI_SOCIAL_IMPACT_RIBBON_WHITE",
+    charCode: "F6002"
+}, {
+    serverName: "tickets_ticket",
+    humanReadableName: "AIRMOJI_TICKETS_TICKET",
+    charCode: "F7001"
+}, {
+    serverName: "audio_headphones",
+    humanReadableName: "AIRMOJI_AUDIO_HEADPHONES",
+    charCode: "F8001"
+}, {
+    serverName: "extras_star",
+    humanReadableName: "AIRMOJI_EXTRAS_STAR",
+    charCode: "F9001"
+}, {
+    serverName: "people_guest",
+    humanReadableName: "AIRMOJI_PEOPLE_GUEST",
+    charCode: "F1101"
+}, {
+    serverName: "nature_leaf",
+    humanReadableName: "AIRMOJI_NATURE_LEAF",
+    charCode: "F1201"
+}, {
+    serverName: "nature_water",
+    humanReadableName: "AIRMOJI_NATURE_WATER",
+    charCode: "F1202"
+}, {
+    serverName: "trips_fitness",
+    humanReadableName: "AIRMOJI_TRIPS_FITNESS",
+    charCode: "F1301"
+}, {
+    serverName: "trips_wellness",
+    humanReadableName: "AIRMOJI_TRIPS_WELLNESS",
+    charCode: "F1302"
+}, {
+    serverName: "trips_entertainment",
+    humanReadableName: "AIRMOJI_TRIPS_ENTERTAINMENT",
+    charCode: "F1303"
+}, {
+    serverName: "trips_nightlife",
+    humanReadableName: "AIRMOJI_TRIPS_NIGHTLIFE",
+    charCode: "F1304"
+}, {
+    serverName: "trips_music",
+    humanReadableName: "AIRMOJI_TRIPS_MUSIC",
+    charCode: "F1305"
+}, {
+    serverName: "trips_lifestyle",
+    humanReadableName: "AIRMOJI_TRIPS_LIFESTYLE",
+    charCode: "F1306"
+}, {
+    serverName: "trips_sightseeing",
+    humanReadableName: "AIRMOJI_TRIPS_SIGHTSEEING",
+    charCode: "F1307"
+}, {
+    serverName: "trips_shopping",
+    humanReadableName: "AIRMOJI_TRIPS_SHOPPING",
+    charCode: "F1308"
+}, {
+    serverName: "trips_fashion",
+    humanReadableName: "AIRMOJI_TRIPS_FASHION",
+    charCode: "F1309"
+}, {
+    serverName: "trips_workshop",
+    humanReadableName: "AIRMOJI_TRIPS_WORKSHOP",
+    charCode: "F1310"
+}, {
+    serverName: "trips_history",
+    humanReadableName: "AIRMOJI_TRIPS_HISTORY",
+    charCode: "F1311"
+}, {
+    serverName: "trips_technology",
+    humanReadableName: "AIRMOJI_TRIPS_TECHNOLOGY",
+    charCode: "F1312"
+}, {
+    serverName: "trips_tours",
+    humanReadableName: "AIRMOJI_TRIPS_TOURS",
+    charCode: "F1313"
+}, {
+    serverName: "trips_beauty",
+    humanReadableName: "AIRMOJI_TRIPS_BEAUTY",
+    charCode: "F1314"
+}, {
+    serverName: "art_culture_gallery",
+    humanReadableName: "AIRMOJI_ART_CULTURE_GALLERY",
+    charCode: "F1401"
+}, {
+    serverName: "art_culture_museum",
+    humanReadableName: "AIRMOJI_ART_CULTURE_MUSEUM",
+    charCode: "F1402"
+}, {
+    serverName: "art_culture_theater",
+    humanReadableName: "AIRMOJI_ART_CULTURE_THEATER",
+    charCode: "F1403"
+}, {
+    serverName: "art_culture_library",
+    humanReadableName: "AIRMOJI_ART_CULTURE_LIBRARY",
+    charCode: "F1404"
+}, {
+    serverName: "art_culture_movie_theater",
+    humanReadableName: "AIRMOJI_ART_CULTURE_MOVIE_THEATER",
+    charCode: "F1405"
+}, {
+    serverName: "hands_greeting",
+    humanReadableName: "AIRMOJI_HANDS_GREETING",
+    charCode: "F1501"
+}, {
+    serverName: "nav_right_chevron",
+    humanReadableName: "AIRMOJI_NAV_RIGHT_CHEVRON",
+    charCode: "F1601"
+}, {
+    serverName: "nav_down_chevron",
+    humanReadableName: "AIRMOJI_NAV_DOWN_CHEVRON",
+    charCode: "F1602"
+}, {
+    serverName: "nav_left_chevron",
+    humanReadableName: "AIRMOJI_NAV_LEFT_CHEVRON",
+    charCode: "F1603"
+}, {
+    serverName: "nav_next_chevron",
+    humanReadableName: "AIRMOJI_NAV_NEXT_CHEVRON",
+    charCode: "F1601"
+}, {
+    serverName: "nav_previous_chevron",
+    humanReadableName: "AIRMOJI_NAV_PREVIOUS_CHEVRON",
+    charCode: "F1603"
+}, {
+    serverName: "description_calendar",
+    humanReadableName: "AIRMOJI_DESCRIPTION_CALENDAR",
+    charCode: "F1701"
+}, {
+    serverName: "description_clock",
+    humanReadableName: "AIRMOJI_DESCRIPTION_CLOCK",
+    charCode: "F1702"
+}, {
+    serverName: "description_menu",
+    humanReadableName: "AIRMOJI_DESCRIPTION_MENU",
+    charCode: "F1703"
+}, {
+    serverName: "description_dialog",
+    humanReadableName: "AIRMOJI_DESCRIPTION_DIALOG",
+    charCode: "F1704"
+}, {
+    serverName: "description_value",
+    humanReadableName: "AIRMOJI_DESCRIPTION_VALUE",
+    charCode: "F1705"
+}, {
+    serverName: "description_bulb",
+    humanReadableName: "AIRMOJI_DESCRIPTION_BULB",
+    charCode: "F1706"
+}, {
+    serverName: "description_price_tag",
+    humanReadableName: "AIRMOJI_DESCRIPTION_PRICE_TAG",
+    charCode: "F1707"
+}, {
+    serverName: "description_heart",
+    humanReadableName: "AIRMOJI_DESCRIPTION_HEART",
+    charCode: "F1708"
+}, {
+    serverName: "description_map_pin",
+    humanReadableName: "AIRMOJI_DESCRIPTION_MAP_PIN",
+    charCode: "F1709"
+}, {
+    serverName: "description_rtl_menu",
+    humanReadableName: "AIRMOJI_DESCRIPTION_RTL_MENU",
+    charCode: "F1710"
+}, {
+    serverName: "description_rtl_dialog",
+    humanReadableName: "AIRMOJI_DESCRIPTION_RTL_DIALOG",
+    charCode: "F1711"
+}, {
+    serverName: "status_accepted",
+    humanReadableName: "AIRMOJI_STATUS_ACCEPTED",
+    charCode: "F1801"
+}, {
+    serverName: "status_pending",
+    humanReadableName: "AIRMOJI_STATUS_PENDING",
+    charCode: "F1802"
+}, {
+    serverName: "status_cancelled",
+    humanReadableName: "AIRMOJI_STATUS_CANCELLED",
+    charCode: "F1803"
+}, {
+    serverName: "status_edit",
+    humanReadableName: "AIRMOJI_STATUS_EDIT",
+    charCode: "F1804"
+}, {
+    serverName: "house_rules_yes_party",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_YES_PARTY",
+    charCode: "F1901"
+}, {
+    serverName: "house_rules_no_party",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_NO_PARTY",
+    charCode: "F1902"
+}, {
+    serverName: "house_rules_yes_kids",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_YES_KIDS",
+    charCode: "F1903"
+}, {
+    serverName: "house_rules_no_kids",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_NO_KIDS",
+    charCode: "F1904"
+}, {
+    serverName: "house_rules_yes_pets",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_YES_PETS",
+    charCode: "F1905"
+}, {
+    serverName: "house_rules_no_pets",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_NO_PETS",
+    charCode: "F1906"
+}, {
+    serverName: "house_rules_yes_smoking",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_YES_SMOKING",
+    charCode: "F1907"
+}, {
+    serverName: "house_rules_no_smoking",
+    humanReadableName: "AIRMOJI_HOUSE_RULES_NO_SMOKING",
+    charCode: "F1908"
+}, {
+    serverName: "pdp_bath",
+    humanReadableName: "AIRMOJI_PDP_BATH",
+    charCode: "F0101"
+}, {
+    serverName: "pdp_guests",
+    humanReadableName: "AIRMOJI_PDP_GUESTS",
+    charCode: "F0102"
+}, {
+    serverName: "pdp_bed",
+    humanReadableName: "AIRMOJI_PDP_BED",
+    charCode: "F0103"
+}, {
+    serverName: "pdp_room",
+    humanReadableName: "AIRMOJI_PDP_ROOM",
+    charCode: "F0104"
+}, {
+    serverName: "pdp_all_rooms",
+    humanReadableName: "AIRMOJI_PDP_ALL_ROOMS",
+    charCode: "F0105"
+}, {
+    serverName: "dp_raise_price",
+    humanReadableName: "AIRMOJI_DP_RAISE_PRICE",
+    charCode: "F0201"
+}, {
+    serverName: "dp_lower_price",
+    humanReadableName: "AIRMOJI_DP_LOWER_PRICE",
+    charCode: "F0202"
+}, {
+    serverName: "dp_edited_price",
+    humanReadableName: "AIRMOJI_DP_EDITED_PRICE",
+    charCode: "F0203"
+}, {
+    serverName: "an_shower",
+    humanReadableName: "AIRMOJI_AN_SHOWER",
+    charCode: "F0301"
+}, {
+    serverName: "an_common_area",
+    humanReadableName: "AIRMOJI_AN_COMMON_AREA",
+    charCode: "F0302"
+}, {
+    serverName: "an_getting_around",
+    humanReadableName: "AIRMOJI_AN_GETTING_AROUND",
+    charCode: "F0303"
+}, {
+    serverName: "em_cancel",
+    humanReadableName: "AIRMOJI_EM_CANCEL",
+    charCode: "F0401"
+}, {
+    serverName: "em_payment",
+    humanReadableName: "AIRMOJI_EM_PAYMENT",
+    charCode: "F0402"
+}, {
+    serverName: "em_send",
+    humanReadableName: "AIRMOJI_EM_SEND",
+    charCode: "F0403"
+}, {
+    serverName: "em_call",
+    humanReadableName: "AIRMOJI_EM_CALL",
+    charCode: "F0404"
+}, {
+    serverName: "em_invite",
+    humanReadableName: "AIRMOJI_EM_INVITE",
+    charCode: "F0405"
+}, {
+    serverName: "em_remove",
+    humanReadableName: "AIRMOJI_EM_REMOVE",
+    charCode: "F0406"
+}, {
+    serverName: "gb_upload_photo",
+    humanReadableName: "AIRMOJI_GB_UPLOAD_PHOTO",
+    charCode: "F0501"
+}];
+
+function nameToEmoji(name) {
+    const airmoji = AIRMOJIS.find(airmoji => airmoji.serverName === name);
+    return String.fromCodePoint(parseInt(airmoji.charCode, 16));
+}
+
+export default function Airmoji({ name, fontSize = 14, color = '#484848' }) {
+    const styles = StyleSheet.create({
+        airmoji: {
+            fontFamily: 'Airmoji',
+            fontSize,
+            color
+        }
+    });
+    return (
+        <Text style={styles.airmoji}>{nameToEmoji(name)}</Text>
+    );
+}

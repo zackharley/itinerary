@@ -1,0 +1,43 @@
+{
+  "name": "itinerary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel-node src/api.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "docker-build": "docker build -t itinerary .",
+    "docker-run": "docker run -v $(pwd)/dist:/usr/src/app/dist itinerary",
+    "start": "npm run clean && npm run docker-build && npm run docker-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zackharley/itinerary.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zackharley/itinerary/issues"
+  },
+  "homepage": "https://github.com/zackharley/itinerary#readme",
+  "dependencies": {
+    "@google/maps": "^0.4.6",
+    "@react-pdf/core": "^0.7.6",
+    "@react-pdf/node": "^0.7.6",
+    "airtable": "^0.5.3",
+    "dotenv": "^5.0.1",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
+    "moment-timezone": "^0.5.16",
+    "pdf-merge": "^1.0.2",
+    "react": "^16.3.2",
+    "request": "^2.85.0",
+    "tempfile": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1"
+  }
+}
