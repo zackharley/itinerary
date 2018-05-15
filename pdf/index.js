@@ -26,29 +26,25 @@ const FONTS = {
     'Airmoji': 'Airmoji/airmojix-Regular-d6dee9123269338ba773518a6f1b9f88.ttf',
 };
 
-main({ date: '2018-06-04' }).catch(console.error);
+// generateItinerary({ date: '2018-06-04' }).catch(console.error);
 
-async function main({ date } = {}) {
-    try {
-        registerFonts();
+export async function generateItinerary({ date } = {}) {
+    const itinerary = await fetchDailyItinerary(date);
 
-        await ReactPDF.render(
-            <AirmojiReference/>,
-            path.join(OUTPUT_DIR, 'airmoji-reference.pdf')
-        );
+    // await ReactPDF.render(
+    //     <AirmojiReference/>,
+    //     path.join(OUTPUT_DIR, 'airmoji-reference.pdf')
+    // );
 
-        const itinerary = await fetchDailyItinerary(date);
+    registerFonts();
 
-        const pdfs = [
-            await generateOverviewPdf(itinerary),
-            ...(await generateEventsAttachmentsPdfs(itinerary)),
-            ...(await generatePlaceAttachmentsPdfs(itinerary)),
-            ...(await generateTravelsAttachmentsPdfs(itinerary)),
-        ];
-        const combinedFile = await generateCombinedPdf(pdfs, OUTPUT_FILENAME);
-    } catch (e) {
-        console.error(e);
-    }
+    const pdfs = [
+        await generateOverviewPdf(itinerary),
+        ...(await generateEventsAttachmentsPdfs(itinerary)),
+        ...(await generatePlaceAttachmentsPdfs(itinerary)),
+        ...(await generateTravelsAttachmentsPdfs(itinerary)),
+    ];
+    return await generateCombinedPdf(pdfs, OUTPUT_FILENAME);
 }
 
 function registerFonts() {
@@ -133,7 +129,8 @@ function downloadFile(url, filename) {
 }
 
 async function generateCombinedPdf(files, filename) {
-    const combinedFile = path.resolve(OUTPUT_DIR, filename);
+    // const combinedFile = path.resolve(OUTPUT_DIR, filename);
+    const combinedFile = tempfile('.pdf');
     await PDFMerge(files, { output: combinedFile });
     console.log('Combined PDF created!');
     return combinedFile;

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Itinerary</title>
+  </head>
+  <body>
+    <button onclick="getItinerary()">Today's Itinerary</button>
+    <form id="custom-date-itinerary">
+      <input id="date" type="date" placeholder="Enter a date..."/>
+      <button type="submit">Get Itinerary</button>
+    </form>
+    <script>
+        async function handleCustomDateFormSubmit(e) {
+            e.preventDefault();
+            const date = document.getElementById('date').value;
+            if (date) {
+                await getItinerary(new Date(date));
+            }
+        }
+
+        async function getItinerary(date = new Date()) {
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1 < 10
+                ? `0${date.getMonth() + 1}`
+                : date.getMonth() + 1;
+            const day = date.getDate() < 10
+                ? `0${date.getDate()}`
+                : date.getDate();
+            window.location = `/api/itinerary/${year}-${month}-${day}`;
+        }
+
+        document.getElementById('custom-date-itinerary')
+            .addEventListener('submit', handleCustomDateFormSubmit);
+    </script>
+  </body>
+</html>

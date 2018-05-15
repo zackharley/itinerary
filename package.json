@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel-node src/api.js",
-    "clean": "rm -rf dist && mkdir dist",
+    "build": "babel-node server/index.js",
     "docker-build": "docker build -t itinerary .",
-    "docker-run": "docker run -v $(pwd)/dist:/usr/src/app/dist itinerary",
-    "start": "npm run clean && npm run docker-build && npm run docker-run"
+    "docker-run": "docker run -i -p 8080:8080 itinerary",
+    "start": "npm run docker-build && npm run docker-run"
   },
   "repository": {
     "type": "git",
@@ -26,6 +25,7 @@
     "@react-pdf/node": "^0.7.6",
     "airtable": "^0.5.3",
     "dotenv": "^5.0.1",
+    "express": "^4.16.3",
     "lodash": "^4.17.10",
     "moment": "^2.22.1",
     "moment-timezone": "^0.5.16",

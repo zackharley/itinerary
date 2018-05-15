@@ -1,4 +1,5 @@
 import Airtable from 'airtable';
+import moment from 'moment-timezone';
 import { fetchLocationDetails } from './google-maps';
 
 require('dotenv').config();
@@ -8,14 +9,18 @@ const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE);
 
 export function fetchDailyItinerary(date) {
     const itineraryTable = base(ITINERARY_KEY);
+    const dateToFind = moment(date).format('YYYY-MM-DD');
     return new Promise((resolve, reject) => {
         return itineraryTable.select({
             fields: ['City', 'Date', 'Events', 'Landmarks', 'Notes', 'Places We\'re Staying', 'Travel'],
-            filterByFormula: `DATETIME_DIFF(DATETIME_PARSE('${date}'), Date) = 0`,
+            filterByFormula: `DATETIME_DIFF(DATETIME_PARSE('${dateToFind}'), Date) = 0`,
             view: 'Grid view'
         }).firstPage(async (err, [record]) => {
             if (err) {
                 return reject(err);
+            }
+            if (!record) {
+                return reject(Error(`No matching record found for the supplied date: ${dateToFind}`));
             }
             return resolve({
                 city: await fetchCity(record.fields.City[0]),
