@@ -29,6 +29,8 @@ const FONTS = {
 // generateItinerary({ date: '2018-06-04' }).catch(console.error);
 
 export async function generateItinerary({ date } = {}) {
+    console.log('Beginning to generate itinerary!');
+
     const itinerary = await fetchDailyItinerary(date);
 
     // await ReactPDF.render(

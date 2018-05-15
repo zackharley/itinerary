@@ -1,9 +1,16 @@
 import express from 'express';
 import path from 'path';
+import csp from 'helmet-csp';
 import api from './api';
 
 const app = express();
 const PORT = 8080;
+
+app.use(csp({
+    directives: {
+        objectSrc: ["'self'", 'blob:']
+    }
+}));
 
 app.use('/api', api);
 app.get('/', (req, res) => {

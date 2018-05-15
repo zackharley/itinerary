@@ -26,6 +26,7 @@
     "airtable": "^0.5.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "helmet-csp": "^2.7.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.1",
     "moment-timezone": "^0.5.16",
