@@ -7,7 +7,7 @@ import ReactPDF from '@react-pdf/node';
 import PDFMerge from 'pdf-merge';
 import { Font } from '@react-pdf/core';
 import { AirmojiReference, Itinerary, TitlePage } from './components';
-import { fetchDailyItinerary } from './utils/airtable';
+import { fetchDailyItinerary } from '../utils/airtable';
 
 import path from 'path';
 

@@ -8,6 +8,33 @@ require('dotenv').config();
 const { AIRTABLE_API_KEY, AIRTABLE_BASE, EVENTS_KEY, ITINERARY_KEY } = process.env;
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE);
 
+export function fetchCityForDate(date) {
+    const itineraryTable = base(ITINERARY_KEY);
+    const dateToFind = moment(date).format('YYYY-MM-DD');
+
+    return new Promise((resolve, reject) => {
+        return itineraryTable.select({
+            fields: ['City'],
+            filterByFormula: `DATETIME_DIFF(DATETIME_PARSE('${dateToFind}'), Date) = 0`,
+            view: 'Grid view'
+        }).firstPage(async (err, [record]) => {
+            if (err) {
+                return reject(err);
+            }
+            if (!record) {
+                return reject(Error(`No matching record found for the supplied date: ${dateToFind}`));
+            }
+
+            const cityId = get(record.fields.City, '[0]');
+            if (!cityId) {
+                return reject(Error('No city found for date'));
+            }
+
+            return resolve({ city: await fetchCity(cityId) });
+        });
+    })
+}
+
 export function fetchDailyItinerary(date) {
     const itineraryTable = base(ITINERARY_KEY);
     const dateToFind = moment(date).format('YYYY-MM-DD');
@@ -26,12 +53,6 @@ export function fetchDailyItinerary(date) {
 
             const cityId = get(record.fields.City, '[0]');
             const placeWereStayingId = get(record.fields['Places We\'re Staying'], '[0]');
-            if (!cityId) {
-                return reject(Error('No city found for date'));
-            }
-            if (!placeWereStayingId) {
-                return reject(Error('No place we\'re staing found for date'));
-            }
 
             return resolve({
                 city: await fetchCity(cityId),
@@ -70,7 +91,16 @@ function fetchEvent(eventId) {
     });
 }
 
+const UNDEFINED_CITY = {
+    name: 'Undetermined',
+    photo: '',
+    tourismWebsite: ''
+};
+
 function fetchCity(cityId) {
+    if (!cityId) {
+        return Object.assign({}, UNDEFINED_CITY);
+    }
     const citiesTable = base('CITIES');
     return new Promise((resolve, reject) => {
         return citiesTable.find(cityId, (err, city) => {
@@ -131,7 +161,17 @@ function fetchTravel(travelId) {
     });
 }
 
+const UNDEFINED_PLACE_WERE_STAYING = {
+    address: 'N/A',
+    attachments: [],
+    name: 'Undetermined',
+    type: ''
+};
+
 function fetchPlaceWereStaying(placeId) {
+    if (!placeId) {
+        return Object.assign({}, UNDEFINED_PLACE_WERE_STAYING);
+    }
     const placesTable = base('Places We\'re Staying');
     return new Promise((resolve, reject) => {
         return placesTable.find(placeId, async (err, place) => {

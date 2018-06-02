@@ -43,9 +43,6 @@ export default function Place({ place }) {
             <View>
                 <Text style={styles.title}>{place.name}</Text>
                 <View style={styles.row}>
-                    <Airmoji name="core_belo"
-                             fontSize={14}
-                             color="#ff5a5f"/>
                     <Text style={styles.text}>{place.type}</Text>
                 </View>
                 <Text style={styles.text}>{place.address.formatted_address}</Text>

@@ -2,35 +2,232 @@
 <html>
   <head>
     <title>Itinerary</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700|Material+Icons" rel="stylesheet">
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-simple-spinner"></script>
+    <script src="https://unpkg.com/vuejs-datepicker"></script>
     <script src="https://unpkg.com/vue-toasted"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Lato', sans-serif;
+        color: #111;
+      }
+
+      :root {
+        --grey: #E5E6E4;
+      }
+
+      .overlay {
+        height: 100%;
+        width: 100%;
+        border-radius: 2px;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .overlay-message {
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      .wrapper {
+        height: 100vh;
+        width: 100vw;
+        background-image: url(/img/background.jpg);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+
+      .modal {
+        background-color: white;
+        height: 400px;
+        width: 300px;
+        border-radius: 2px;
+        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
+      }
+
+      .modal-inner {
+        margin: 30px 20px;
+        height: calc(100% - 60px);
+      }
+
+      .title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+      }
+
+      .city-intro {
+        text-align: center;
+        font-size: 0.88rem;
+        font-weight: 300;
+        margin-bottom: 30px;
+      }
+
+      .city-name {
+        font-size: 2rem;
+        font-weight: 400;
+      }
+
+      .divider-container {
+        margin: 20px 0;
+        width: 100%;
+      }
+
+      .divider {
+        height: 1px;
+        flex: 1 1 auto;
+        background-color: var(--grey);
+        margin: 0 10px;
+      }
+
+      .divider-text {
+        color: #A6A2A2;
+      }
+
+      .datepicker-wrapper {
+        margin: 0 0 20px 0;
+      }
+
+      .datepicker-input {
+        border: none;
+        border-bottom: 1px solid var(--grey);
+        font-size: 0.80rem;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+        padding: 10px 10px;
+        font-size: 0.8rem;
+        font-weight: 400;
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        background-color: #FFE066;
+      }
+
+      .btn.secondary {
+        background-color: #247BA0;
+        color: white;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .flex.column {
+        flex-direction: column;
+      }
+
+      .flex.column.center-horizontal {
+        align-items: center;
+      }
+
+      .flex.row {
+        flex-direction: row;
+      }
+
+      .flex.row.center-vertical {
+        align-items: center;
+      }
+
+      .flex.center {
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
   </head>
   <body>
-    <main id="app">
-      <button v-on:click="getItinerary()">Today's Itinerary</button>
-      <form v-on:submit="handleCustomDateFormSubmit">
-        <input type="date"
-               placeholder="Enter a date..."
-               v-model="date"/>
-        <button type="submit">Get Itinerary</button>
-      </form>
+    <main id="app"
+          class="wrapper flex column center">
+      <section class="modal">
+        <div class="overlay flex column center"
+             v-if="loading">
+          <p class="overlay-message">{{loadingMessage}}</p>
+          <vue-simple-spinner></vue-simple-spinner>
+        </div>
+        <div v-else
+             class="modal-inner flex column center">
+          <h1 class="title">
+            Europe 2018
+          </h1>
+          <p v-show="city && city.name"
+             class="city-intro">
+            Today we're in<br/>
+            <span class="city-name">{{city.name}}</span>
+          </p>
+          <button v-show="city && city.name"
+                  v-on:click="getItinerary()"
+                  class="btn primary">
+            Get Today's Itinerary
+          </button>
+          <div class="flex row center-vertical divider-container"
+               v-show="city && city.name">
+            <div class="divider"></div>
+            <p class="divider-text">or</p>
+            <div class="divider"></div>
+          </div>
+          <form v-on:submit="handleCustomDateFormSubmit"
+                class="flex column center-horizontal">
+            <vuejs-datepicker placeholder="Pick a date"
+                              v-model="date"
+                              input-class="datepicker-input"
+                              wrapper-class="datepicker-wrapper">
+            </vuejs-datepicker>
+            <button type="submit"
+                    class="btn secondary">
+              Get Custom Itinerary
+            </button>
+          </form>
+        </div>
+      </section>
     </main>
     <script>
         const toastedOptions = {
             position: 'bottom-center',
             duration: 5000,
-            icon: 'clear',
             singleton: true
         };
         Vue.use(Toasted, toastedOptions);
         new Vue({
             el: '#app',
             data: {
-                date: ''
+                city: {},
+                date: '',
+                loading: true,
+                loadingMessage: 'Initializing'
+            },
+            components: {
+                vuejsDatepicker,
+                VueSimpleSpinner
+            },
+            async mounted() {
+                this.city = await this.fetchCityForDate();
+                this.loading = false;
+                this.loadingMessage = '';
             },
             methods: {
+                async fetchCityForDate() {
+                    const date = new Date();
+                    const year = date.getUTCFullYear();
+                    const month = date.getUTCMonth() + 1 < 10
+                        ? `0${date.getUTCMonth() + 1}`
+                        : date.getUTCMonth() + 1;
+                    const day = date.getUTCDate() < 10
+                        ? `0${date.getUTCDate()}`
+                        : date.getUTCDate();
+                    const response = await fetch(`/api/city/${year}-${month}-${day}`);
+                    if (response.status !== 200) {
+                        return {};
+                    }
+                    return (await response.json()).city;
+                },
                 async handleCustomDateFormSubmit(e) {
                     e.preventDefault();
                     const date = this.date;
@@ -39,6 +236,8 @@
                     }
                 },
                 async getItinerary(date = new Date()) {
+                    this.loading = true;
+                    this.loadingMessage = 'Fetching itinerary';
                     const year = date.getUTCFullYear();
                     const month = date.getUTCMonth() + 1 < 10
                         ? `0${date.getUTCMonth() + 1}`
@@ -49,7 +248,7 @@
                     const response = await fetch(`/api/itinerary/${year}-${month}-${day}`);
                     if (response.status !== 200) {
                         const obj = await response.json();
-                        this.$toasted.show(`${obj.message} ${obj.error}`);
+                        this.$toasted.error(`${obj.message} ${obj.error}`);
                         return;
                     }
                     await this.showFile(await response.blob());

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import fs from 'fs';
 import moment from 'moment-timezone';
 import { generateItinerary } from '../pdf';
+import { fetchCityForDate } from '../utils/airtable';
 
 const router = Router();
 
@@ -15,6 +16,15 @@ router.get('/itinerary/:date', async (req, res) => {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=itinerary-${date}.pdf`);
         return stream.pipe(res);
+    } catch (error) {
+        return res.status(400).send({ message: 'Error!', error: error.toString() });
+    }
+});
+
+router.get('/city/:date', async (req, res) => {
+    try {
+        const date = moment(req.params.date).format('YYYY-MM-DD');
+        res.send(await fetchCityForDate(date));
     } catch (error) {
         return res.status(400).send({ message: 'Error!', error: error.toString() });
     }
