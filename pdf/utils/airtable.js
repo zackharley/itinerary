@@ -1,6 +1,7 @@
 import Airtable from 'airtable';
 import moment from 'moment-timezone';
 import { fetchLocationDetails } from './google-maps';
+import { get } from 'lodash';
 
 require('dotenv').config();
 
@@ -22,13 +23,23 @@ export function fetchDailyItinerary(date) {
             if (!record) {
                 return reject(Error(`No matching record found for the supplied date: ${dateToFind}`));
             }
+
+            const cityId = get(record.fields.City, '[0]');
+            const placeWereStayingId = get(record.fields['Places We\'re Staying'], '[0]');
+            if (!cityId) {
+                return reject(Error('No city found for date'));
+            }
+            if (!placeWereStayingId) {
+                return reject(Error('No place we\'re staing found for date'));
+            }
+
             return resolve({
-                city: await fetchCity(record.fields.City[0]),
+                city: await fetchCity(cityId),
                 date: record.fields.Date,
                 events: await fetchEvents(record.fields.Events),
                 landmarks: await fetchLandmarks(record.fields.Landmarks),
                 notes: record.fields.Notes,
-                place: await fetchPlaceWereStaying(record.fields['Places We\'re Staying'][0]),
+                place: await fetchPlaceWereStaying(placeWereStayingId),
                 travels: await fetchTravels(record.fields.Travel)
             });
         });

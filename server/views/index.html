@@ -2,45 +2,69 @@
 <html>
   <head>
     <title>Itinerary</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-toasted"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
   </head>
   <body>
-    <button onclick="getItinerary()">Today's Itinerary</button>
-    <form id="custom-date-itinerary">
-      <input id="date" type="date" placeholder="Enter a date..."/>
-      <button type="submit">Get Itinerary</button>
-    </form>
+    <main id="app">
+      <button v-on:click="getItinerary()">Today's Itinerary</button>
+      <form v-on:submit="handleCustomDateFormSubmit">
+        <input type="date"
+               placeholder="Enter a date..."
+               v-model="date"/>
+        <button type="submit">Get Itinerary</button>
+      </form>
+    </main>
     <script>
-        async function handleCustomDateFormSubmit(e) {
-            e.preventDefault();
-            const date = document.getElementById('date').value;
-            if (date) {
-                await getItinerary(new Date(date));
+        const toastedOptions = {
+            position: 'bottom-center',
+            duration: 5000,
+            icon: 'clear',
+            singleton: true
+        };
+        Vue.use(Toasted, toastedOptions);
+        new Vue({
+            el: '#app',
+            data: {
+                date: ''
+            },
+            methods: {
+                async handleCustomDateFormSubmit(e) {
+                    e.preventDefault();
+                    const date = this.date;
+                    if (date) {
+                        await this.getItinerary(new Date(date));
+                    }
+                },
+                async getItinerary(date = new Date()) {
+                    const year = date.getUTCFullYear();
+                    const month = date.getUTCMonth() + 1 < 10
+                        ? `0${date.getUTCMonth() + 1}`
+                        : date.getUTCMonth() + 1;
+                    const day = date.getUTCDate() < 10
+                        ? `0${date.getUTCDate()}`
+                        : date.getUTCDate();
+                    const response = await fetch(`/api/itinerary/${year}-${month}-${day}`);
+                    if (response.status !== 200) {
+                        const obj = await response.json();
+                        this.$toasted.show(`${obj.message} ${obj.error}`);
+                        return;
+                    }
+                    await this.showFile(await response.blob());
+                },
+
+                async showFile(blob) {
+                    const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(pdfBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    document.body.appendChild(link);
+                    link.click();
+                }
             }
-        }
-
-        async function getItinerary(date = new Date()) {
-            const year = date.getUTCFullYear();
-            const month = date.getUTCMonth() + 1 < 10
-                ? `0${date.getUTCMonth() + 1}`
-                : date.getUTCMonth() + 1;
-            const day = date.getUTCDate()  < 10
-                ? `0${date.getUTCDate()}`
-                : date.getUTCDate();
-            const response = await fetch(`/api/itinerary/${year}-${month}-${day}`);
-            await showFile(await response.blob());
-        }
-
-        async function showFile(blob) {
-            const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-            const url = URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-        }
-
-        document.getElementById('custom-date-itinerary')
-            .addEventListener('submit', handleCustomDateFormSubmit);
+        })
     </script>
   </body>
 </html>
