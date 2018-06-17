@@ -14,7 +14,7 @@ export function fetchCityForDate(date) {
 
     return new Promise((resolve, reject) => {
         return itineraryTable.select({
-            fields: ['City'],
+            fields: ['Cities'],
             filterByFormula: `DATETIME_DIFF(DATETIME_PARSE('${dateToFind}'), Date) = 0`,
             view: 'Grid view'
         }).firstPage(async (err, [record]) => {
@@ -25,7 +25,7 @@ export function fetchCityForDate(date) {
                 return reject(Error(`No matching record found for the supplied date: ${dateToFind}`));
             }
 
-            const cityId = get(record.fields.City, '[0]');
+            const cityId = get(record.fields.Cities, '[0]');
             if (!cityId) {
                 return reject(Error('No city found for date'));
             }
@@ -40,7 +40,7 @@ export function fetchDailyItinerary(date) {
     const dateToFind = moment(date).format('YYYY-MM-DD');
     return new Promise((resolve, reject) => {
         return itineraryTable.select({
-            fields: ['City', 'Date', 'Events', 'Landmarks', 'Notes', 'Places We\'re Staying', 'Travel'],
+            fields: ['Cities', 'Date', 'Events', 'Landmarks', 'Notes', 'Places We\'re Staying', 'Travel'],
             filterByFormula: `DATETIME_DIFF(DATETIME_PARSE('${dateToFind}'), Date) = 0`,
             view: 'Grid view'
         }).firstPage(async (err, [record]) => {
@@ -51,7 +51,7 @@ export function fetchDailyItinerary(date) {
                 return reject(Error(`No matching record found for the supplied date: ${dateToFind}`));
             }
 
-            const cityId = get(record.fields.City, '[0]');
+            const cityId = get(record.fields.Cities, '[0]');
             const placeWereStayingId = get(record.fields['Places We\'re Staying'], '[0]');
 
             return resolve({
